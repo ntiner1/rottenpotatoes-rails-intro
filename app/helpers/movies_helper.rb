@@ -9,4 +9,8 @@ module MoviesHelper
       return 'hilite'
     end
   end
+  
+  def isChecked?(rating)
+    session[:ratings].include?(rating)
+  end
 end
