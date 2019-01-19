@@ -13,24 +13,26 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.all_ratings
-    session[:ratings] = @all_ratings unless session[:ratings]
-    session[:ratings] = params[:ratings].present? ? params[:ratings].keys : session[:ratings]
-    sort = params[:sortMovies].present? ? params[:sortMovies] : session[:sort]
-    if sort == "Title"
-      @movies = Movie.order(:title)
-      @movies = @movies.where({ rating: session[:ratings] })
-      @clicked = "Title"
-      session[:sort] = "Title"
-    elsif sort == "Release"
-      @movies = Movie.order(:release_date)
-      @movies = @movies.where({ rating: session[:ratings] })
-      @clicked = "Release"
-      session[:sort] = "Release"
-    else
-      @movies = Movie.where({ rating: session[:ratings] })
-      session.delete(:sort)
+    unless params[:ratings].present? && params[:sortMovies].present?
+      ratings = params[:ratings].present? ? params[:ratings] : (session[:ratings].present? ? session[:ratings] : @all_ratings)
+      sortMovies = params[:sortMovies].present? ? params[:sortMovies] : (session[:sortMovies].present? ? session[:sortMovies] : "")
+      redirect_to action: "index", params: { ratings: ratings, sortMovies: sortMovies } and return
     end
-    return @movies
+    session[:ratings] = params[:ratings]
+    @ratings = params[:ratings]
+    sortMovies = params[:sortMovies]
+    if sortMovies == "Title"
+      @movies = Movie.where({ rating: @ratings.keys }).order(:title)
+      @clicked = "Title"
+      session[:sortMovies] = "Title"
+    elsif sortMovies == "Release"
+      @movies = Movie.where({ rating: @ratings.keys }).order(:release_date)
+      @clicked = "Release"
+      session[:sortMovies] = "Release"
+    else
+      @movies = Movie.where({ rating: @ratings.keys })
+    end
+    @movies
   end
 
   def new

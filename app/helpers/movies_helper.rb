@@ -11,6 +11,6 @@ module MoviesHelper
   end
   
   def isChecked?(rating)
-    session[:ratings].include?(rating)
+    @ratings.include?(rating)
   end
 end
