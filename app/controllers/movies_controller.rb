@@ -15,7 +15,7 @@ class MoviesController < ApplicationController
     @all_ratings = Movie.all_ratings
     unless params[:ratings].present? && params[:sortMovies].present?
       ratings = params[:ratings].present? ? params[:ratings] : (session[:ratings].present? ? session[:ratings] : @all_ratings)
-      sortMovies = params[:sortMovies].present? ? params[:sortMovies] : (session[:sortMovies].present? ? session[:sortMovies] : "")
+      sortMovies = params[:sortMovies].present? ? params[:sortMovies] : (session[:sortMovies].present? ? session[:sortMovies] : "none")
       redirect_to action: "index", params: { ratings: ratings, sortMovies: sortMovies } and return
     end
     session[:ratings] = params[:ratings]
